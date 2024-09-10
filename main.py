@@ -27,34 +27,20 @@ def load_user(user_id):
 def index():
     return render_template('index.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data)
-        new_user = User(email=form.email.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Your account has been created!', 'success')
-        return redirect(url_for('login'))
-    return render_template('register.html', form=form)
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        app.logger.debug(f"Attempting login for email: {form.email.data}")
         user = User.query.filter_by(email=form.email.data).first()
-        app.logger.debug(f"User query result: {user}")
-        app.logger.debug("Checking password")
         if user and check_password_hash(user.password, form.password.data):
-            app.logger.debug("Password check successful")
             login_user(user)
-            return redirect(url_for('customize'))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
-            app.logger.debug("Login unsuccessful")
             flash('Login unsuccessful. Please check email and password.', 'danger')
-    return render_template('login.html', form=form)
+    return render_template('login.html', title='Login', form=form)
 
 @app.route('/logout')
 @login_required
@@ -62,62 +48,48 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data)
+        user = User(email=form.email.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
 @app.route('/customize', methods=['GET', 'POST'])
 @login_required
 def customize():
-    app.logger.debug(f"Accessing customize route for user_id: {current_user.id}")
     form = CustomizationForm()
-    if form.validate_on_submit():
-        app.logger.debug("Form validation successful")
-        logo_filename = None
-        if form.logo.data:
-            app.logger.debug("Saving logo image")
-            try:
-                logo_filename = save_picture(form.logo.data)
-                app.logger.debug(f"Logo saved: {logo_filename}")
-            except Exception as e:
-                app.logger.error(f"Error saving logo: {str(e)}")
-        
-        try:
-            customization = Customization.query.filter_by(user_id=current_user.id).first()
-            app.logger.debug(f"Customization query result: {customization}")
-            if customization:
-                app.logger.debug("Updating existing customization")
-                customization.company_name = form.company_name.data
-                customization.logo = logo_filename or customization.logo
-                customization.brand_color = form.brand_color.data
-                customization.button_bg_color = form.button_bg_color.data
-                customization.button_text_color = form.button_text_color.data
-                customization.button_radius = form.button_radius.data
-                customization.button_hover_bg_color = form.button_hover_bg_color.data
-                customization.button_hover_text_color = form.button_hover_text_color.data
-            else:
-                app.logger.debug("Creating new customization")
-                customization = Customization(
-                    user_id=current_user.id,
-                    company_name=form.company_name.data,
-                    logo=logo_filename,
-                    brand_color=form.brand_color.data,
-                    button_bg_color=form.button_bg_color.data,
-                    button_text_color=form.button_text_color.data,
-                    button_radius=form.button_radius.data,
-                    button_hover_bg_color=form.button_hover_bg_color.data,
-                    button_hover_text_color=form.button_hover_text_color.data
-                )
-                db.session.add(customization)
-            
-            db.session.commit()
-            app.logger.debug("Customization saved successfully")
-            flash('Your customization has been saved!', 'success')
-            return redirect(url_for('customize'))
-        except Exception as e:
-            app.logger.error(f"Error saving customization: {str(e)}")
-            flash('An error occurred while saving your customization.', 'danger')
-    
     customization = Customization.query.filter_by(user_id=current_user.id).first()
-    app.logger.debug(f"Customization query result: {customization}")
-    if customization:
-        app.logger.debug("Loading existing customization data")
+    if form.validate_on_submit():
+        if customization:
+            customization.company_name = form.company_name.data
+            customization.brand_color = form.brand_color.data
+            customization.button_bg_color = form.button_bg_color.data
+            customization.button_text_color = form.button_text_color.data
+            customization.button_radius = form.button_radius.data
+            customization.button_hover_bg_color = form.button_hover_bg_color.data
+            customization.button_hover_text_color = form.button_hover_text_color.data
+        else:
+            customization = Customization(user_id=current_user.id, company_name=form.company_name.data,
+                                          brand_color=form.brand_color.data, button_bg_color=form.button_bg_color.data,
+                                          button_text_color=form.button_text_color.data, button_radius=form.button_radius.data,
+                                          button_hover_bg_color=form.button_hover_bg_color.data,
+                                          button_hover_text_color=form.button_hover_text_color.data)
+            db.session.add(customization)
+        if form.logo.data:
+            picture_file = save_picture(form.logo.data)
+            customization.logo = picture_file
+        db.session.commit()
+        flash('Your customization has been updated!', 'success')
+        return redirect(url_for('customize'))
+    elif request.method == 'GET' and customization:
         form.company_name.data = customization.company_name
         form.brand_color.data = customization.brand_color
         form.button_bg_color.data = customization.button_bg_color
@@ -125,36 +97,52 @@ def customize():
         form.button_radius.data = customization.button_radius
         form.button_hover_bg_color.data = customization.button_hover_bg_color
         form.button_hover_text_color.data = customization.button_hover_text_color
-    
-    return render_template('customize.html', form=form, customization=customization)
+    return render_template('customize.html', title='Customize', form=form, customization=customization)
 
-@app.route('/delete_logo', methods=['POST'])
+@app.route('/admin')
 @login_required
-def delete_logo():
-    customization = Customization.query.filter_by(user_id=current_user.id).first()
-    if customization and customization.logo:
-        try:
-            # Delete the logo file
-            logo_path = os.path.join(app.root_path, 'static', 'uploads', customization.logo)
-            if os.path.exists(logo_path):
-                os.remove(logo_path)
-            
-            # Update the database
-            customization.logo = None
-            db.session.commit()
-            
-            return jsonify({"success": True, "message": "Logo deleted successfully"})
-        except Exception as e:
-            app.logger.error(f"Error deleting logo: {str(e)}")
-            return jsonify({"success": False, "message": "Error deleting logo"}), 500
-    else:
-        return jsonify({"success": False, "message": "No logo found"}), 404
+def admin_panel():
+    if not current_user.is_admin:
+        flash('You do not have permission to access the admin panel.', 'danger')
+        return redirect(url_for('index'))
+    users = User.query.all()
+    customizations = Customization.query.all()
+    return render_template('admin_panel.html', users=users, customizations=customizations)
+
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'message': 'Permission denied'}), 403
+    
+    user = User.query.get_or_404(user_id)
+    if user.is_admin:
+        return jsonify({'success': False, 'message': 'Cannot delete admin user'}), 400
+    
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'User deleted successfully'})
+
+@app.route('/admin/delete_customization/<int:customization_id>', methods=['POST'])
+@login_required
+def delete_customization(customization_id):
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'message': 'Permission denied'}), 403
+    
+    customization = Customization.query.get_or_404(customization_id)
+    db.session.delete(customization)
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Customization deleted successfully'})
 
 def init_db():
     with app.app_context():
         db.drop_all()
         db.create_all()
-        app.logger.info("Database tables created")
+        # Create an admin user
+        admin = User(email='admin@example.com', password=generate_password_hash('admin123'), is_admin=True)
+        db.session.add(admin)
+        db.session.commit()
+        app.logger.info("Database tables created and admin user added")
 
 if __name__ == '__main__':
     init_db()
