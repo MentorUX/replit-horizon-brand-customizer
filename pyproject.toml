@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "repl-nix-saasthemecustomizer-1"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^3.0.3"
+werkzeug = "^3.0.4"
+flask-sqlalchemy = "^3.1.1"
+flask-login = "^0.6.3"
+flask-wtf = "^1.2.1"
+pillow = "^10.4.0"
+psycopg2-binary = "^2.9.9"
+email-validator = "^2.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

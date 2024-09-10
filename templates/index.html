@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="text-4xl font-bold mb-4">Welcome to SaaS Theme Customizer</h1>
+    <p class="text-xl mb-8">Customize your SaaS theme with ease</p>
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('customize') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+            Start Customizing
+        </a>
+    {% else %}
+        <a href="{{ url_for('register') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+            Get Started
+        </a>
+    {% endif %}
+</div>
+{% endblock %}

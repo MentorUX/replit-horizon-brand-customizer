@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+    <div class="p-8">
+        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-4">Customize Your Theme</div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="flex flex-wrap -mx-2">
+                <!-- Left column: Form inputs -->
+                <div class="w-full md:w-1/2 px-2">
+                    <div class="mb-4">
+                        {{ form.company_name.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        {{ form.company_name(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                    </div>
+                    <div class="mb-4">
+                        {{ form.logo.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        <div id="logo-container" class="relative">
+                            {% if customization and customization.logo %}
+                                <img id="logo-preview" src="{{ url_for('static', filename='uploads/' + customization.logo) }}" alt="Company Logo" class="mb-2 max-w-full h-auto">
+                                <button id="delete-logo" type="button" class="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            {% endif %}
+                            <div id="logo-input-container" {% if customization and customization.logo %}style="display: none;"{% endif %}>
+                                {{ form.logo(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", id="logo-input") }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        {{ form.brand_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        <div class="flex">
+                            <input type="color" id="brand_color_picker" class="w-10 h-10 mr-2">
+                            {{ form.brand_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        {{ form.button_bg_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        <div class="flex">
+                            <input type="color" id="button_bg_color_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_bg_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        {{ form.button_text_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        <div class="flex">
+                            <input type="color" id="button_text_color_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_text_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        {{ form.button_hover_bg_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        <div class="flex">
+                            <input type="color" id="button_hover_bg_color_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_hover_bg_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        {{ form.button_hover_text_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        <div class="flex">
+                            <input type="color" id="button_hover_text_color_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_hover_text_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        {{ form.button_radius.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        {{ form.button_radius(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", type="range", min="0", max="20", step="1") }}
+                        <span id="radiusValue"></span>px
+                    </div>
+                </div>
+
+                <!-- Right column: Preview -->
+                <div class="w-full md:w-1/2 px-2">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold mb-2">Button Preview</h3>
+                        <p class="text-sm text-gray-600 mb-2">Hover over the button to see hover state</p>
+                        <div id="preview" class="p-4 rounded">
+                            <button id="previewButton" class="font-bold py-2 px-4" 
+                                    style="background-color: {{ customization.button_bg_color if customization else '#000000' }}; 
+                                           color: {{ customization.button_text_color if customization else '#ffffff' }}; 
+                                           border-radius: {{ customization.button_radius if customization else '0' }}px;">
+                                Sample Button
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit button -->
+            <div class="flex items-center justify-between mt-6">
+                {{ form.submit(class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline") }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
