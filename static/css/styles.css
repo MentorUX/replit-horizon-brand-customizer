@@ -14,3 +14,7 @@
 .btn-primary:hover {
     @apply bg-blue-700;
 }
+
+.rounded-full {
+    border-radius: 100px;
+}

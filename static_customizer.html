@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Theme Customizer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Add any custom styles here */
+        .form-input {
+            @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+        }
+        .btn {
+            @apply font-bold py-2 px-4 rounded;
+        }
+        .btn-primary {
+            @apply bg-blue-500 text-white;
+        }
+        .btn-primary:hover {
+            @apply bg-blue-700;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-8 px-4">
+        <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-8">
+                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-4">Customize Your Theme</div>
+                <form id="customizationForm">
+                    <div class="flex flex-wrap -mx-2">
+                        <!-- Left column: Form inputs -->
+                        <div class="w-full md:w-1/2 px-2">
+                            <div class="mb-4">
+                                <label for="company_name" class="block text-gray-700 text-sm font-bold mb-2">Company Name</label>
+                                <input type="text" id="company_name" name="company_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div class="mb-4">
+                                <label for="logo" class="block text-gray-700 text-sm font-bold mb-2">Logo</label>
+                                <input type="file" id="logo" name="logo" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div class="mb-4">
+                                <label for="brand_color" class="block text-gray-700 text-sm font-bold mb-2">Brand Color</label>
+                                <div class="flex">
+                                    <input type="color" id="brand_color_picker" class="w-10 h-10 mr-2">
+                                    <input type="text" id="brand_color" name="brand_color" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="button_bg_color" class="block text-gray-700 text-sm font-bold mb-2">Button Background Color</label>
+                                <div class="flex">
+                                    <input type="color" id="button_bg_color_picker" class="w-10 h-10 mr-2">
+                                    <input type="text" id="button_bg_color" name="button_bg_color" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="button_text_color" class="block text-gray-700 text-sm font-bold mb-2">Button Text Color</label>
+                                <div class="flex">
+                                    <input type="color" id="button_text_color_picker" class="w-10 h-10 mr-2">
+                                    <input type="text" id="button_text_color" name="button_text_color" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="button_hover_bg_color" class="block text-gray-700 text-sm font-bold mb-2">Button Hover Background Color</label>
+                                <div class="flex">
+                                    <input type="color" id="button_hover_bg_color_picker" class="w-10 h-10 mr-2">
+                                    <input type="text" id="button_hover_bg_color" name="button_hover_bg_color" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="button_hover_text_color" class="block text-gray-700 text-sm font-bold mb-2">Button Hover Text Color</label>
+                                <div class="flex">
+                                    <input type="color" id="button_hover_text_color_picker" class="w-10 h-10 mr-2">
+                                    <input type="text" id="button_hover_text_color" name="button_hover_text_color" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <label for="button_radius" class="block text-gray-700 text-sm font-bold mb-2">Button Radius</label>
+                                <input type="range" id="button_radius" name="button_radius" min="0" max="20" step="1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                <span id="radiusValue"></span>px
+                            </div>
+                        </div>
+
+                        <!-- Right column: Live Preview -->
+                        <div class="w-full md:w-1/2 px-2">
+                            <div class="mb-4">
+                                <h3 class="text-lg font-bold mb-2">Live Preview</h3>
+                                <div id="preview" class="p-4 rounded">
+                                    <div id="company-name-preview" class="text-2xl font-bold mb-4"></div>
+                                    <div id="logo-preview-container" class="mb-4">
+                                        <img id="logo-preview-image" src="" alt="Company Logo" class="max-w-full h-auto hidden">
+                                    </div>
+                                    <button id="previewButton" class="font-bold py-2 px-4">
+                                        Sample Button
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit button -->
+                    <div class="flex items-center justify-between mt-6">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Save Customization
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const form = document.getElementById('customizationForm');
+            const previewButton = document.getElementById('previewButton');
+            const radiusInput = document.getElementById('button_radius');
+            const radiusValue = document.getElementById('radiusValue');
+            const companyNameInput = document.getElementById('company_name');
+            const companyNamePreview = document.getElementById('company-name-preview');
+            const logoInput = document.getElementById('logo');
+            const logoPreviewImage = document.getElementById('logo-preview-image');
+            const logoPreviewContainer = document.getElementById('logo-preview-container');
+            const preview = document.getElementById('preview');
+
+            const colorInputs = [
+                { picker: 'brand_color_picker', input: 'brand_color', previewElement: 'preview' },
+                { picker: 'button_bg_color_picker', input: 'button_bg_color', previewElement: 'previewButton' },
+                { picker: 'button_text_color_picker', input: 'button_text_color', previewElement: 'previewButton' },
+                { picker: 'button_hover_bg_color_picker', input: 'button_hover_bg_color', previewElement: 'previewButton' },
+                { picker: 'button_hover_text_color_picker', input: 'button_hover_text_color', previewElement: 'previewButton' }
+            ];
+
+            function updatePreview() {
+                // Update company name
+                companyNamePreview.textContent = companyNameInput.value;
+
+                // Update brand color
+                preview.style.backgroundColor = document.getElementById('brand_color').value;
+
+                // Update button styles
+                previewButton.style.backgroundColor = document.getElementById('button_bg_color').value;
+                previewButton.style.color = document.getElementById('button_text_color').value;
+                previewButton.style.borderRadius = `${radiusInput.value}px`;
+
+                // Update hover states
+                previewButton.dataset.hoverBgColor = document.getElementById('button_hover_bg_color').value;
+                previewButton.dataset.hoverTextColor = document.getElementById('button_hover_text_color').value;
+            }
+
+            function saveCustomization() {
+                const customization = {
+                    company_name: companyNameInput.value,
+                    brand_color: document.getElementById('brand_color').value,
+                    button_bg_color: document.getElementById('button_bg_color').value,
+                    button_text_color: document.getElementById('button_text_color').value,
+                    button_radius: radiusInput.value,
+                    button_hover_bg_color: document.getElementById('button_hover_bg_color').value,
+                    button_hover_text_color: document.getElementById('button_hover_text_color').value
+                };
+                localStorage.setItem('customization', JSON.stringify(customization));
+            }
+
+            function loadCustomization() {
+                const savedCustomization = localStorage.getItem('customization');
+                if (savedCustomization) {
+                    const customization = JSON.parse(savedCustomization);
+                    companyNameInput.value = customization.company_name || '';
+                    document.getElementById('brand_color').value = customization.brand_color || '#ffffff';
+                    document.getElementById('button_bg_color').value = customization.button_bg_color || '#000000';
+                    document.getElementById('button_text_color').value = customization.button_text_color || '#ffffff';
+                    radiusInput.value = customization.button_radius || '0';
+                    document.getElementById('button_hover_bg_color').value = customization.button_hover_bg_color || '#000000';
+                    document.getElementById('button_hover_text_color').value = customization.button_hover_text_color || '#ffffff';
+                    updatePreview();
+                }
+            }
+
+            // Initialize preview
+            loadCustomization();
+            updatePreview();
+
+            // Company name live update
+            companyNameInput.addEventListener('input', updatePreview);
+
+            // Button radius live update
+            if (radiusInput && previewButton && radiusValue) {
+                radiusInput.addEventListener('input', function() {
+                    previewButton.style.borderRadius = `${this.value}px`;
+                    radiusValue.textContent = this.value;
+                    updatePreview();
+                });
+
+                // Set initial value
+                radiusValue.textContent = radiusInput.value;
+            }
+
+            // Color inputs live update
+            colorInputs.forEach(({ picker, input, previewElement }) => {
+                const pickerElement = document.getElementById(picker);
+                const inputElement = document.getElementById(input);
+                const previewEl = document.getElementById(previewElement);
+
+                if (pickerElement && inputElement && previewEl) {
+                    pickerElement.addEventListener('input', function() {
+                        inputElement.value = this.value;
+                        updatePreview();
+                    });
+
+                    inputElement.addEventListener('input', function() {
+                        pickerElement.value = this.value;
+                        updatePreview();
+                    });
+
+                    // Set initial values
+                    pickerElement.value = inputElement.value;
+                }
+            });
+
+            // Logo preview
+            if (logoInput) {
+                logoInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            logoPreviewImage.src = e.target.result;
+                            logoPreviewImage.classList.remove('hidden');
+                            logoPreviewContainer.classList.remove('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Button hover state preview
+            if (previewButton) {
+                previewButton.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = this.dataset.hoverBgColor;
+                    this.style.color = this.dataset.hoverTextColor;
+                });
+
+                previewButton.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = document.getElementById('button_bg_color').value;
+                    this.style.color = document.getElementById('button_text_color').value;
+                });
+            }
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveCustomization();
+                alert('Customization saved successfully!');
+            });
+        });
+    </script>
+</body>
+</html>
