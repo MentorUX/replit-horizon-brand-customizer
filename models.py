@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from itsdangerous import URLSafeTimedSerializer as Serializer
+from flask import current_app
 
 db = SQLAlchemy()
 
@@ -7,7 +9,21 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    is_verified = db.Column(db.Boolean, default=False)
     customization = db.relationship('Customization', backref='user', uselist=False)
+
+    def get_verification_token(self, expires_sec=1800):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        return s.dumps({'user_id': self.id}, salt='email-verify')
+
+    @staticmethod
+    def verify_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token, salt='email-verify', max_age=1800)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
 class Customization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
