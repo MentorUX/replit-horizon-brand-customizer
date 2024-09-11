@@ -27,7 +27,7 @@ class LoginForm(FlaskForm):
 
 class CustomizationForm(FlaskForm):
     company_name = StringField('Company Name', validators=[DataRequired()])
-    logo = FileField('Logo', validators=[FileAllowed(['jpg', 'png', 'svg'])])
+    logo = FileField('Logo', validators=[FileAllowed(['jpg', 'png', 'gif', 'svg'])])
     brand_color = StringField('Brand Color', validators=[DataRequired(), validate_hex_color])
     button_primary_default_color_bg = StringField('Primary Button Background Color', validators=[DataRequired(), validate_hex_color])
     button_primary_default_color_text = StringField('Primary Button Text Color', validators=[DataRequired(), validate_hex_color])

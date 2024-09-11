@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, render_template, flash, redirect, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -18,6 +19,9 @@ csrf = CSRFProtect(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -68,33 +72,41 @@ def customize():
     form = CustomizationForm()
     customization = Customization.query.filter_by(user_id=current_user.id).first()
     if form.validate_on_submit():
-        if customization:
-            customization.company_name = form.company_name.data
-            customization.brand_color = form.brand_color.data
-            customization.button_primary_default_color_bg = form.button_primary_default_color_bg.data
-            customization.button_primary_default_color_text = form.button_primary_default_color_text.data
-            customization.button_primary_default_color_stroke = form.button_primary_default_color_stroke.data
-            customization.button_radius = form.button_radius.data
-            customization.button_primary_hover_color_bg = form.button_primary_hover_color_bg.data
-            customization.button_primary_hover_color_text = form.button_primary_hover_color_text.data
-            customization.button_primary_hover_color_stroke = form.button_primary_hover_color_stroke.data
-        else:
-            customization = Customization(user_id=current_user.id, company_name=form.company_name.data,
-                                          brand_color=form.brand_color.data, 
-                                          button_primary_default_color_bg=form.button_primary_default_color_bg.data,
-                                          button_primary_default_color_text=form.button_primary_default_color_text.data,
-                                          button_primary_default_color_stroke=form.button_primary_default_color_stroke.data,
-                                          button_radius=form.button_radius.data,
-                                          button_primary_hover_color_bg=form.button_primary_hover_color_bg.data,
-                                          button_primary_hover_color_text=form.button_primary_hover_color_text.data,
-                                          button_primary_hover_color_stroke=form.button_primary_hover_color_stroke.data)
-            db.session.add(customization)
-        if form.logo.data:
-            picture_file = save_picture(form.logo.data)
-            customization.logo = picture_file
-        db.session.commit()
-        flash('Your customization has been updated!', 'success')
-        return redirect(url_for('customize'))
+        try:
+            if customization:
+                logging.info(f"Updating existing customization for user {current_user.id}")
+                customization.company_name = form.company_name.data
+                customization.brand_color = form.brand_color.data
+                customization.button_primary_default_color_bg = form.button_primary_default_color_bg.data
+                customization.button_primary_default_color_text = form.button_primary_default_color_text.data
+                customization.button_primary_default_color_stroke = form.button_primary_default_color_stroke.data
+                customization.button_radius = form.button_radius.data
+                customization.button_primary_hover_color_bg = form.button_primary_hover_color_bg.data
+                customization.button_primary_hover_color_text = form.button_primary_hover_color_text.data
+                customization.button_primary_hover_color_stroke = form.button_primary_hover_color_stroke.data
+            else:
+                logging.info(f"Creating new customization for user {current_user.id}")
+                customization = Customization(user_id=current_user.id, company_name=form.company_name.data,
+                                              brand_color=form.brand_color.data, 
+                                              button_primary_default_color_bg=form.button_primary_default_color_bg.data,
+                                              button_primary_default_color_text=form.button_primary_default_color_text.data,
+                                              button_primary_default_color_stroke=form.button_primary_default_color_stroke.data,
+                                              button_radius=form.button_radius.data,
+                                              button_primary_hover_color_bg=form.button_primary_hover_color_bg.data,
+                                              button_primary_hover_color_text=form.button_primary_hover_color_text.data,
+                                              button_primary_hover_color_stroke=form.button_primary_hover_color_stroke.data)
+                db.session.add(customization)
+            if form.logo.data:
+                picture_file = save_picture(form.logo.data)
+                customization.logo = picture_file
+            db.session.commit()
+            logging.info(f"Customization saved successfully for user {current_user.id}")
+            flash('Your customization has been updated!', 'success')
+            return redirect(url_for('customize'))
+        except Exception as e:
+            logging.error(f"Error saving customization for user {current_user.id}: {str(e)}")
+            db.session.rollback()
+            flash('An error occurred while saving your customization. Please try again.', 'danger')
     elif request.method == 'GET' and customization:
         form.company_name.data = customization.company_name
         form.brand_color.data = customization.brand_color

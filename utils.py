@@ -2,6 +2,7 @@ import os
 import secrets
 from PIL import Image
 from flask import current_app
+import shutil
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -12,9 +13,14 @@ def save_picture(form_picture):
     # Create the directory if it doesn't exist
     os.makedirs(os.path.dirname(picture_path), exist_ok=True)
 
-    output_size = (125, 125)
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)
-    i.save(picture_path)
+    if f_ext.lower() == '.svg':
+        # For SVG files, just save the file without resizing
+        form_picture.save(picture_path)
+    else:
+        # For other image formats, resize and save
+        output_size = (125, 125)
+        i = Image.open(form_picture)
+        i.thumbnail(output_size)
+        i.save(picture_path)
 
     return picture_fn
