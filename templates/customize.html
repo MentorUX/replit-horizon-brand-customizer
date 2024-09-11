@@ -37,36 +37,50 @@
                         </div>
                     </div>
                     <div class="mb-4">
-                        {{ form.button_bg_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        {{ form.button_primary_default_color_bg.label(class="block text-gray-700 text-sm font-bold mb-2") }}
                         <div class="flex">
-                            <input type="color" id="button_bg_color_picker" class="w-10 h-10 mr-2">
-                            {{ form.button_bg_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                            <input type="color" id="button_primary_default_color_bg_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_primary_default_color_bg(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
                         </div>
                     </div>
                     <div class="mb-4">
-                        {{ form.button_text_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        {{ form.button_primary_default_color_text.label(class="block text-gray-700 text-sm font-bold mb-2") }}
                         <div class="flex">
-                            <input type="color" id="button_text_color_picker" class="w-10 h-10 mr-2">
-                            {{ form.button_text_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                            <input type="color" id="button_primary_default_color_text_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_primary_default_color_text(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
                         </div>
                     </div>
                     <div class="mb-4">
-                        {{ form.button_hover_bg_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        {{ form.button_primary_default_color_stroke.label(class="block text-gray-700 text-sm font-bold mb-2") }}
                         <div class="flex">
-                            <input type="color" id="button_hover_bg_color_picker" class="w-10 h-10 mr-2">
-                            {{ form.button_hover_bg_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                            <input type="color" id="button_primary_default_color_stroke_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_primary_default_color_stroke(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
                         </div>
                     </div>
                     <div class="mb-4">
-                        {{ form.button_hover_text_color.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        {{ form.button_primary_hover_color_bg.label(class="block text-gray-700 text-sm font-bold mb-2") }}
                         <div class="flex">
-                            <input type="color" id="button_hover_text_color_picker" class="w-10 h-10 mr-2">
-                            {{ form.button_hover_text_color(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                            <input type="color" id="button_primary_hover_color_bg_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_primary_hover_color_bg(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        {{ form.button_primary_hover_color_text.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        <div class="flex">
+                            <input type="color" id="button_primary_hover_color_text_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_primary_hover_color_text(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        {{ form.button_primary_hover_color_stroke.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        <div class="flex">
+                            <input type="color" id="button_primary_hover_color_stroke_picker" class="w-10 h-10 mr-2">
+                            {{ form.button_primary_hover_color_stroke(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
                         </div>
                     </div>
                     <div class="mb-6">
                         {{ form.button_radius.label(class="block text-gray-700 text-sm font-bold mb-2") }}
-                        {{ form.button_radius(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", type="range", min="0", max="20", step="1") }}
+                        {{ form.button_radius(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", type="range", min="0", max="32", step="2") }}
                         <span id="radiusValue"></span>px
                     </div>
                 </div>

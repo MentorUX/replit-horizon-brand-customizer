@@ -15,10 +15,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     const colorInputs = [
         { picker: 'brand_color_picker', input: 'brand_color', previewElement: 'preview' },
-        { picker: 'button_bg_color_picker', input: 'button_bg_color', previewElement: 'previewButton' },
-        { picker: 'button_text_color_picker', input: 'button_text_color', previewElement: 'previewButton' },
-        { picker: 'button_hover_bg_color_picker', input: 'button_hover_bg_color', previewElement: 'previewButton' },
-        { picker: 'button_hover_text_color_picker', input: 'button_hover_text_color', previewElement: 'previewButton' }
+        { picker: 'button_primary_default_color_bg_picker', input: 'button_primary_default_color_bg', previewElement: 'previewButton' },
+        { picker: 'button_primary_default_color_text_picker', input: 'button_primary_default_color_text', previewElement: 'previewButton' },
+        { picker: 'button_primary_default_color_stroke_picker', input: 'button_primary_default_color_stroke', previewElement: 'previewButton' },
+        { picker: 'button_primary_hover_color_bg_picker', input: 'button_primary_hover_color_bg', previewElement: 'previewButton' },
+        { picker: 'button_primary_hover_color_text_picker', input: 'button_primary_hover_color_text', previewElement: 'previewButton' },
+        { picker: 'button_primary_hover_color_stroke_picker', input: 'button_primary_hover_color_stroke', previewElement: 'previewButton' }
     ];
 
     function updatePreview() {
@@ -41,8 +43,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // Update button styles
         const buttonStyle = {
-            backgroundColor: document.getElementById('button_bg_color').value,
-            color: document.getElementById('button_text_color').value,
+            backgroundColor: document.getElementById('button_primary_default_color_bg').value,
+            color: document.getElementById('button_primary_default_color_text').value,
+            borderColor: document.getElementById('button_primary_default_color_stroke').value,
+            borderWidth: '2px',
+            borderStyle: 'solid',
             borderRadius: `${radiusInput.value}px`
         };
 
@@ -52,13 +57,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // Update hover states
         const hoverStyle = {
-            hoverBgColor: document.getElementById('button_hover_bg_color').value,
-            hoverTextColor: document.getElementById('button_hover_text_color').value
+            hoverBgColor: document.getElementById('button_primary_hover_color_bg').value,
+            hoverTextColor: document.getElementById('button_primary_hover_color_text').value,
+            hoverStrokeColor: document.getElementById('button_primary_hover_color_stroke').value
         };
 
         [previewButton, previewButton2].forEach(button => {
             button.dataset.hoverBgColor = hoverStyle.hoverBgColor;
             button.dataset.hoverTextColor = hoverStyle.hoverTextColor;
+            button.dataset.hoverStrokeColor = hoverStyle.hoverStrokeColor;
         });
     }
 
@@ -148,11 +155,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
         button.addEventListener('mouseenter', function() {
             this.style.backgroundColor = this.dataset.hoverBgColor;
             this.style.color = this.dataset.hoverTextColor;
+            this.style.borderColor = this.dataset.hoverStrokeColor;
         });
 
         button.addEventListener('mouseleave', function() {
-            this.style.backgroundColor = document.getElementById('button_bg_color').value;
-            this.style.color = document.getElementById('button_text_color').value;
+            this.style.backgroundColor = document.getElementById('button_primary_default_color_bg').value;
+            this.style.color = document.getElementById('button_primary_default_color_text').value;
+            this.style.borderColor = document.getElementById('button_primary_default_color_stroke').value;
         });
     });
 });

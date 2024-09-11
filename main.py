@@ -71,17 +71,23 @@ def customize():
         if customization:
             customization.company_name = form.company_name.data
             customization.brand_color = form.brand_color.data
-            customization.button_bg_color = form.button_bg_color.data
-            customization.button_text_color = form.button_text_color.data
+            customization.button_primary_default_color_bg = form.button_primary_default_color_bg.data
+            customization.button_primary_default_color_text = form.button_primary_default_color_text.data
+            customization.button_primary_default_color_stroke = form.button_primary_default_color_stroke.data
             customization.button_radius = form.button_radius.data
-            customization.button_hover_bg_color = form.button_hover_bg_color.data
-            customization.button_hover_text_color = form.button_hover_text_color.data
+            customization.button_primary_hover_color_bg = form.button_primary_hover_color_bg.data
+            customization.button_primary_hover_color_text = form.button_primary_hover_color_text.data
+            customization.button_primary_hover_color_stroke = form.button_primary_hover_color_stroke.data
         else:
             customization = Customization(user_id=current_user.id, company_name=form.company_name.data,
-                                          brand_color=form.brand_color.data, button_bg_color=form.button_bg_color.data,
-                                          button_text_color=form.button_text_color.data, button_radius=form.button_radius.data,
-                                          button_hover_bg_color=form.button_hover_bg_color.data,
-                                          button_hover_text_color=form.button_hover_text_color.data)
+                                          brand_color=form.brand_color.data, 
+                                          button_primary_default_color_bg=form.button_primary_default_color_bg.data,
+                                          button_primary_default_color_text=form.button_primary_default_color_text.data,
+                                          button_primary_default_color_stroke=form.button_primary_default_color_stroke.data,
+                                          button_radius=form.button_radius.data,
+                                          button_primary_hover_color_bg=form.button_primary_hover_color_bg.data,
+                                          button_primary_hover_color_text=form.button_primary_hover_color_text.data,
+                                          button_primary_hover_color_stroke=form.button_primary_hover_color_stroke.data)
             db.session.add(customization)
         if form.logo.data:
             picture_file = save_picture(form.logo.data)
@@ -92,11 +98,13 @@ def customize():
     elif request.method == 'GET' and customization:
         form.company_name.data = customization.company_name
         form.brand_color.data = customization.brand_color
-        form.button_bg_color.data = customization.button_bg_color
-        form.button_text_color.data = customization.button_text_color
+        form.button_primary_default_color_bg.data = customization.button_primary_default_color_bg
+        form.button_primary_default_color_text.data = customization.button_primary_default_color_text
+        form.button_primary_default_color_stroke.data = customization.button_primary_default_color_stroke
         form.button_radius.data = customization.button_radius
-        form.button_hover_bg_color.data = customization.button_hover_bg_color
-        form.button_hover_text_color.data = customization.button_hover_text_color
+        form.button_primary_hover_color_bg.data = customization.button_primary_hover_color_bg
+        form.button_primary_hover_color_text.data = customization.button_primary_hover_color_text
+        form.button_primary_hover_color_stroke.data = customization.button_primary_hover_color_stroke
     return render_template('customize.html', title='Customize', form=form, customization=customization)
 
 @app.route('/admin')
